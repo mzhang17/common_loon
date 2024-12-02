@@ -1,0 +1,136 @@
+---
+title: "botulism"
+format: pdf
+editor: visual
+---
+
+# Set up
+
+```{r}
+#| label: setup 
+#| include: false  
+
+rm(list = ls()) 
+
+library(tidyverse)  
+library(ggpubr)
+
+
+# development code - stuff I run a lot when i'm developing code so I save it in this # setup code chunk so as to be able to get to it quickly. This code chunk gets transferred from file to file in my development environment #fname <- file.choose()}
+```
+
+## construct functions
+
+switch matrix when it is a random botulism year.
+
+```{r}
+#| label: model_functions_random_botulism_years  
+constructMatrixB <- function(Botu_p,Norm_p, prob) {
+  # Botu_p, parameters of botulism year, with adult and juvenile survival lower than normal years
+  # Norm_p, parameters of normal year
+  # prob, proportion of normal year
+  # Define fecundity rate for adults (same as before)
+  Botu_p$Fa <- with(Botu_p, (Pa^(10/12))*b_adult*m*r)
+  Botu_p$Fy <- with(Botu_p, (Pa^(10/12))*b_young_adult*m*r)
+  # define matrix of 7 years
+  Botu_X <- with(Botu_p, matrix(c(
+    0,0,0,Fy,Fy,Fy,Fa,
+    sigma_j,0,0,0,0,0,0,
+    0,sigma_j,0,0,0,0,0,
+    0,0,sigma_j,0,0,0,0,
+    0,0,0,Pa,0,0,0,
+    0,0,0,0,Pa,0,0,
+    0,0,0,0,0,Pa,Pa
+  ), 7, 7, byrow = TRUE))
+  # Define fecundity rate for adults (same as before)
+  Norm_p$Fa <- with(Norm_p, (Pa^(10/12))*b_adult*m*r)
+  Norm_p$Fy <- with(Norm_p, (Pa^(10/12))*b_young_adult*m*r)
+  # define matrix of 7 years
+  Norm_X <- with(Norm_p, matrix(c(
+    0,0,0,Fy,Fy,Fy,Fa,
+    sigma_j,0,0,0,0,0,0,
+    0,sigma_j,0,0,0,0,0,
+    0,0,sigma_j,0,0,0,0,
+    0,0,0,Pa,0,0,0,
+    0,0,0,0,Pa,0,0,
+    0,0,0,0,0,Pa,Pa
+  ), 7, 7, byrow = TRUE))
+  
+  if (runif(1) < prob) {return(Norm_X)} 
+  else {return(Botu_X)}
+}
+
+projectPopulationB <- function(Botu_p,Norm_p, prob, N){
+  constructMatrixB(Botu_p,Norm_p, prob) %*% N
+}
+ 
+  
+```
+
+## hypothetical parameters for botulism years and normal years
+
+```{r}
+#| label: hypothetical_botulism_parameters 
+# Define hypothetical transition parameters
+
+hyp_norm_p <- list(
+  b_adult=0.8,   # adult pairing propensity
+  b_young_adult=0.1, # young adult pairing propensity
+  m=0.48, # chick production.    
+  r=0.5,   #sex ratio   
+  sigma_j = 0.45^(12/34), #juv survival
+  Pa=0.92  # Adult survival
+)
+
+hyp_botu_p <- list(
+  b_adult=0.8,   # adult pairing propensity
+  b_young_adult=0.1, # young adult pairing propensity
+  m=0.48, # chick production.    
+  r=0.5,   #sex ratio   
+  sigma_j = 0.2^(12/34), #juv survival
+  Pa=0.5  # Adult survival
+)
+```
+
+## run with hypothetical parameters
+
+```{r}
+#| label: run_hypothetical_botulism_parameters 
+
+# to avoid transient dynamics in the early years, I set up the initial population at the stable stage distribution. 
+SSD7<-eigen(constructMatrix7(hyp_p3))$vectors[,1]/eigen(constructMatrix7(hyp_p3))$vectors[2,1] 
+N0_7<-Re(SSD7) * 500  
+nYears = 23
+#create an empty  2 x nYears matrix where each column represents the numbers in each year
+N<-matrix(NA,7,nYears) 
+#set the first column to the initial population sizes 
+N[,1]=t(N0_7) 
+
+# and use a loop to recursively project the population 
+# and fill in the rest of the N matrix 
+for(t in 1:(nYears-1)) 
+  {
+N[,t+1]<-round(projectPopulationB(hyp_botu_p,hyp_norm_p,0.8,N[,t])) 
+}  
+
+# compile matrix into a data frame, with columns in Years and rows in age classes
+pop_base<-data.frame(Year=1:nYears,
+                     NAdults = N[7,],
+                     NY5=N[6,],
+                     NY4=N[5,],
+                     NY3=N[4,],
+                     NJ2=N[3,],
+                     NJ1=N[2,],
+                     NJ0=N[1,]) %>%
+  mutate(
+    NnbAdults = rowSums(select(., 3:5)),  # Sum column 3 to 5 as total number of non-breeding adult (Y3-5)
+    NImmatures = rowSums(select(., 6:8)), # Sum column 6 to 8 as total number of immatures (J0-2)
+    .after = NAdults
+  )
+
+pop_base %>% ggplot()+
+  geom_line(aes(x=Year,y=NAdults),color="black")+
+  geom_line(aes(x=Year,y=NnbAdults),color="blue")+
+  geom_line(aes(x=Year,y=NImmatures),color="red")+
+  labs(title="randomly switch matrix in botulism years")
+```

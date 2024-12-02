@@ -1,0 +1,175 @@
+---
+title: "Population projections: Common Loon "
+subtitle: "Adirondack Center for Loon Conservation (ACLC)"
+format: html
+editor: visual
+authors: 
+  Caz Taylor, 
+  Griffin Archambault
+---
+
+# Summary
+
+This code projects a population of loons using the model from Grear et al. 2009. The first run of the model uses the parameters from Grear et al with the chick production set to 0.48. The second run reads in productivity estimates from a csv file (the path to the file must be specified in `in_fname` in the setup chunk). The estimates used are in the mn_fPP (mean fledgelings per pair) column.
+
+```{r}
+#| label: setup
+#| include: false
+
+rm(list = ls())
+
+library("tidyverse")
+
+#this is Meirun's local path to reach the ACLC drive
+base_dir<-"C:/Users/meiru/Downloads/"
+
+# to import the productivity estimates supply a csv file name 
+in_fname<-"Productivity_estimates.csv"
+
+# development code - stuff I run a lot when i'm developing code so I save it in this
+# setup code chunk so as to be able to get to it quickly. This code chunk gets transferred from file to file in my development environment
+#fname <- file.choose()
+```
+
+## Population Model
+
+In 2009, Grear et al. constructed a 2-stage linear matrix population model for Common Loons.Here we have implemented this model in R and we simulate the population with variable productivity estimates. Thy use a postbreeding census formulation, which means that the annual cycle starts at the end of the breeding season. The immatures enter the adult population as 3 year olds (ie after 3 winters) but after the breeding season so the actual age at first breeding in this model is almost 4 years old (i.e after 4 winters).
+
+The lower level parameters of the model are
+
+*b: pairing propensity, is the proportion of age L3 yr F that form territorial pairs.*
+
+*m: Chicks raised to mid-Aug per paired F.*
+
+*r: proportion of chicks that are F.*
+
+$\sigma_j$*: annual survival of juveniles calculated from Estimate of survival from first census to third yr in May (Mitro et al. 2008).*
+
+$P_a$: *Annual survival for age L3 yr (Mitro et al. 2008)*
+
+The population vector has 2 elements (Number of immatures, Number of adults). We create a function `projectPopulation` that projects the population vector once (i.e., one year into the future).
+
+```{r}
+#| label: model_functions
+
+
+constructMatrix<-function(p)
+{
+  
+p$Fa = with(p,(Pa^(10/12))*b*m*r)
+
+# Construct a 4-stage model with 0,1,2 year olds and adults as the 4 stage classes
+X<-with(p,matrix(c(0,sigma_j,0,0,
+  0,0,sigma_j,0,
+  0,0,0,sigma_j,
+  Fa,0,0,Pa),4,4))
+lam<<-Re(eigen(X)$values[1])
+
+#use the growth rate of the 4 stage matrix to collapse to a 2-stage (immature and adult) model
+p$gamma_j = with(p,((sigma_j/lam)^(2))/sum(sapply(0:(2),function(x){(sigma_j/lam)^(x)})))
+
+p$Gj = with(p,sigma_j*gamma_j)
+p$Pj = with(p,sigma_j*(1-gamma_j))
+
+
+with(p,matrix(c(Pj,Gj,Fa,Pa),byrow=FALSE,2,2))
+}
+
+projectPopulation<-function(p,N)
+{
+   # use matrix multiplication to project the population numbers to the next year
+  constructMatrix(p) %*% N
+
+}
+
+
+```
+
+The base parameters from Grear et al 2009, with the chick production $m$ set to 0.48 which causes the population to be stable. In the original model, $m$ is set to 0.58 for the NH population and 0.41 for the WI population.
+
+```{r}
+#| label: base_parameters
+
+#base params
+base_p<-list(
+  b=0.8,   #pairing propensity
+  m=0.48, # chick production. 
+  r=0.5,   #sex ratio
+  sigma_j = 0.45^(12/34), #juv survival
+  Pa=0.92) # Adult survival
+constructMatrix(base_p)
+lam
+```
+
+## Run with base Parameters
+
+The code below sets up an initial vector, and projects the population for a specified number of years. If the population starts at or near the stable stage distribution, then both the adult and immatures population should grow or decline exponentially at the rate that can be predicted by the matrix (the dominant eigenvalue)
+
+```{r}
+
+# to avoid transient dynamics in the early years, I set up the initial population at the stable stage distribution.
+SSD<-eigen(constructMatrix(base_p))$vectors[,1]/eigen(constructMatrix(base_p))$vectors[2,1]
+N0<-SSD * 500
+
+nYears = 21
+#create an empty  2 x nYears matrix where each column represents the numbers in each year
+N<-matrix(NA,2,nYears)
+#set the first column to the initial population sizes
+N[,1]=t(N0)
+# and use a loop to recursively project the population
+# and fill in the rest of the N matrix
+for(t in 1:(nYears-1))
+{
+  N[,t+1]<-round(projectPopulation(base_p,N[,t]))
+}
+
+pop_base<-data.frame(Year=1:nYears,
+                NAdults = N[2,],
+                NImmatures=N[1,],
+                deltaN=c(NA,N[2,2:nYears]-N[2,1:(nYears-1)]),
+                percent_deltaN = c(NA,
+                            round(100*(N[2,2:nYears]-N[2,1:(nYears-1)])/N[2,1:(nYears-1)],2))) 
+
+pop_base %>% ggplot() +
+  geom_line(aes(x=Year,y=NAdults),color="black")+
+  geom_line(aes(x=Year,y=NImmatures),color="red")+
+  ylim(0,N0[2]*2)
+```
+
+## Run with ADK productivity estimates
+
+Use estimates productivity - remember these are maximum values
+
+```{r}
+df<-read_csv(in_fname) %>% arrange(Year)
+nYears = nrow(df)+1 # add 1 for the initial population
+p<-base_p
+N<-matrix(NA,2,nYears) 
+#set the first column to the initial population sizes
+N[,1]=t(N0)
+# and use a loop to recursively project the population
+# and fill in the rest of the N matrix
+for(t in 1:(nYears-1))
+{
+  p$m <- df$mn_fPP[t] # reset the chicks produced parameter each year
+  N[,t+1]<-round(projectPopulation(p,N[,t]))
+}
+
+
+pop_adk<-data.frame(Year=c(df$Year[1]-1,df$Year),
+                NAdults = N[2,],
+                NImmatures=N[1,],
+                deltaN=c(NA,N[2,2:nYears]-N[2,1:(nYears-1)]),
+                percent_deltaN = c(NA,
+                            round(100*(N[2,2:nYears]-N[2,1:(nYears-1)])/N[2,1:(nYears-1)],2)))  
+
+pop_adk %>% 
+  ggplot() +
+  geom_line(aes(x=Year,y=NAdults),color="black")+
+  geom_line(aes(x=Year,y=NImmatures),color="red")+
+  ylim(0,N0[2]*1.2)
+```
+
+# References
+
+Jason S. Grear, Michael W. Meyer, John H. Cooley, Anne Kuhn, Walter H. Piper, Matthew G. Mitro, Harry S. Vogel, et al. "Population Growth and Demography of Common Loons in the Northern United States." Journal of Wildlife Management, 2009. https://doi.org/10.2193/2008-093.

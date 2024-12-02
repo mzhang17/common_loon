@@ -1,0 +1,256 @@
+---
+title: "ADKproductivity"
+format: pdf
+editor: visual
+---
+
+# Hypothetical parameters
+
+```{r}
+#| label: hypothetical_parameters 
+# Define hypothetical transition parameters
+hyp_p3 <- list(
+  b_a=0.8,   # adult pairing propensity
+  b_y=0.2, # young adult pairing propensity
+  m=0.48, # chick production.    
+  r=0.5,   #sex ratio   
+  sigma_j = 0.45^(12/34), #juv survival
+  Pa=0.92,  # Adult survival
+  sigma_y=0.92 # young adult survival
+)
+
+hyp_p2 <- list(
+  b=0.8,   # adult pairing propensity
+  m=0.48, # chick production.    
+  r=0.5,   #sex ratio   
+  sigma_j = 0.45^(12/34), #juv survival
+  Pa=0.92  # Adult survival
+)
+```
+
+# Run with ADK productivity estimates
+
+Use estimates productivity - remember these are maximum values
+
+## 3 Matrix
+
+```{r}
+#| label: ADK_parameters_3
+SSD3<-eigen(constructMatrix3(hyp_p3))$vectors[,1]/eigen(constructMatrix3(hyp_p3))$vectors[2,1]
+N0_3<-Re(SSD3) * 500
+
+df<-read_csv(in_fname) %>% 
+  arrange(Year) 
+nYears = nrow(df)+1 # add 1 for the initial population 
+p<-hyp_p3
+N<-matrix(NA,3,nYears)  
+#set the first column to the initial population sizes 
+N[,1]=t(N0_3) 
+
+lam3_tibble <- tibble(
+  Year = numeric(),
+  lambda3 = numeric()
+)
+# and use a loop to recursively project the population 
+# and fill in the rest of the N matrix 
+for(t in 1:(nYears-1)) 
+  {   
+  p$m <- df$mn_fPP[t] # reset the chicks produced parameter each year   
+  N[,t+1]<-round(projectPopulation3(p,N[,t])) 
+  new_row <- tibble(Year = t, lambda3 = lam3)
+  lam3_tibble <- bind_rows(lam3_tibble, new_row)
+  }   
+
+pop_adk3<-data.frame(Year=1:nYears,
+                     NAdults = N[3,],
+                     NnbAdults=N[2,],
+                     NImmatures=N[1,],
+                     deltaN=c(NA,N[3,2:nYears]-N[3,1:(nYears-1)]),
+                     percent_deltaN = c(NA,
+                                        round(100*(N[3,2:nYears]-N[3,1:(nYears-1)]
+                                                   )/N[3,1:(nYears-1)],3)))   
+
+pop_adk3 %>%
+  ggplot()+
+  geom_line(aes(x = Year, y = NAdults, color = "Adults")) +
+  geom_line(aes(x = Year, y = NnbAdults, color = "young Adults")) +
+  geom_line(aes(x = Year, y = NImmatures, color = "Immatures")) +
+  labs(
+    title="ADK with 3*3 Matrix",
+    color = "Age Group") +
+  scale_color_manual(values = c("Adults" = "black", "young Adults" = "blue", "Immatures" = "red"))->adk_plot_3
+
+lam3_tibble %>% 
+  ggplot(aes(x=Year,y=lambda3))+
+  geom_line()+
+  geom_hline(yintercept = 1, color = "red", linetype = "dashed")->adk_lam_3
+```
+
+## 7 matrix
+
+```{r}
+#| label: ADK_parameters_7
+SSD7<-eigen(constructMatrix7(hyp_p3))$vectors[,1]/eigen(constructMatrix7(hyp_p3))$vectors[2,1] 
+N0_7<-Re(SSD7) * 500 
+
+N<-matrix(NA,7,nYears)
+#set the first column to the initial population sizes 
+N[,1]=t(N0_7)
+
+lam7_tibble <- tibble(
+  Year = numeric(),
+  lambda7 = numeric()
+)
+# and use a loop to recursively project the population 
+# and fill in the rest of the N matrix 
+for(t in 1:(nYears-1)) 
+  {   
+  p$m <- df$mn_fPP[t] # reset the chicks produced parameter each year   
+  N[,t+1]<-round(projectPopulation7(p,N[,t]))
+  new_row <- tibble(Year = t, lambda7 = lam7)
+  lam7_tibble <- bind_rows(lam7_tibble, new_row)
+  }   
+
+pop_adk7<-data.frame(Year=1:nYears,
+                     NAdults = N[7,],
+                     NY5=N[6,],
+                     NY4=N[5,],
+                     NY3=N[4,],
+                     NJ2=N[3,],
+                     NJ1=N[2,],
+                     NJ0=N[1,]) %>%
+  mutate(
+    NnbAdults = rowSums(select(., 3:5)),  # Sum column 3 to 5 as total number of non-breeding adult (Y3-5)
+    NImmatures = rowSums(select(., 6:8)), # Sum column 6 to 8 as total number of immatures (J0-2)
+    .after = NAdults
+  ) 
+
+
+pop_adk7 %>%
+  ggplot()+
+  geom_line(aes(x = Year, y = NAdults, color = "Adults")) +
+  geom_line(aes(x = Year, y = NnbAdults, color = "young Adults")) +
+  geom_line(aes(x = Year, y = NImmatures, color = "Immatures")) +
+  labs(
+    title="ADK with 7*7 Matrix",
+    color = "Age Group") +
+  scale_color_manual(values = c("Adults" = "black", "young Adults" = "blue", "Immatures" = "red"))->adk_plot_7
+
+lam7_tibble %>% 
+  ggplot(aes(x=Year,y=lambda7))+
+  geom_line()+
+  geom_hline(yintercept = 1, color = "red", linetype = "dashed")->adk_lam_7
+```
+
+## 2 Matrix
+
+```{r}
+#| label: ADK_parameters_2
+SSD2<-eigen(constructMatrix2(hyp_p2))$vectors[,1]/eigen(constructMatrix2(hyp_p2))$vectors[2,1]
+N0_2<-SSD2 * 500
+
+p<-hyp_p2
+N<-matrix(NA,2,nYears) 
+lam2_tibble <- tibble(
+  Year = numeric(),
+  lambda2 = numeric()
+)
+#set the first column to the initial population sizes
+N[,1]=t(N0_2)
+# and use a loop to recursively project the population
+# and fill in the rest of the N matrix
+for(t in 1:(nYears-1))
+{
+  p$m <- df$mn_fPP[t] # reset the chicks produced parameter each year
+  N[,t+1]<-round(projectPopulation2(p,N[,t]))
+  new_row <- tibble(Year = t, lambda2 = lam2)
+  lam2_tibble <- bind_rows(lam2_tibble, new_row)
+}
+
+
+pop_adk2<-data.frame(Year=c(df$Year[1]-1,df$Year),
+                NAdults = N[2,],
+                NImmatures=N[1,],
+                deltaN=c(NA,N[2,2:nYears]-N[2,1:(nYears-1)]),
+                percent_deltaN = c(NA,
+                            round(100*(N[2,2:nYears]-N[2,1:(nYears-1)])/N[2,1:(nYears-1)],2)))  
+
+pop_adk2 %>% 
+  ggplot()+
+  geom_line(aes(x = Year, y = NAdults, color = "Adults")) +
+  geom_line(aes(x = Year, y = NImmatures, color = "Immatures")) +
+  labs(
+    title="ADK with 2*2 Matrix",
+    color = "Age Group") +
+  scale_color_manual(values = c("Adults" = "black", "Immatures" = "red"))->adk_plot_2
+
+lam2_tibble %>% 
+  ggplot(aes(x=Year,y=lambda2))+
+  geom_line()+
+  geom_hline(yintercept = 1, color = "red", linetype = "dashed")->adk_lam_2
+```
+
+## 4 Matrix
+
+```{r}
+#| label: ADK_parameters_4
+SSD<-eigen(constructMatrix4(hyp_p2))$vectors[,1]/eigen(constructMatrix4(hyp_p2))$vectors[2,1]
+N0_4<-Re(SSD) * 500
+
+p<-hyp_p2
+N<-matrix(NA,4,nYears) 
+lam4_tibble <- tibble(
+  Year = numeric(),
+  lambda4 = numeric()
+)
+#set the first column to the initial population sizes
+N[,1]=t(N0_4)
+# and use a loop to recursively project the population
+# and fill in the rest of the N matrix
+for(t in 1:(nYears-1))
+{
+  p$m <- df$mn_fPP[t] # reset the chicks produced parameter each year
+  N[,t+1]<-round(projectPopulation4(p,N[,t]))
+  new_row <- tibble(Year = t, lambda4 = lam4)
+  lam4_tibble <- bind_rows(lam4_tibble, new_row)
+}
+
+
+pop_adk4<-data.frame(Year=1:nYears,
+                     NAdults = N[4,],
+                     NJ2=N[3,],
+                     NJ1=N[2,],
+                     NJ0=N[1,]) %>%
+  mutate(
+    NImmatures = rowSums(select(., 3:5)), # Sum column 6 to 8 as total number of immatures (J0-2)
+    .after = NAdults
+  )
+
+
+pop_adk4 %>% 
+  ggplot()+
+  geom_line(aes(x = Year, y = NAdults, color = "Adults")) +
+  geom_line(aes(x = Year, y = NImmatures, color = "Immatures")) +
+  labs(
+    title="ADK with 4*4 Matrix",
+    color = "Age Group") +
+  scale_color_manual(values = c("Adults" = "black", "Immatures" = "red"))->adk_plot_4
+
+lam4_tibble %>% 
+  ggplot(aes(x=Year,y=lambda4))+
+  geom_line()+
+  geom_hline(yintercept = 1, color = "red", linetype = "dashed")->adk_lam_4
+```
+
+## plot 4 projections
+
+```{r}
+#| fig-width: 8
+#| fig-height: 10
+ggarrange(adk_plot_7,adk_lam_7, 
+          adk_plot_3,adk_lam_3,
+          adk_plot_4,adk_lam_4,
+          adk_plot_2,adk_lam_2,
+          ncol = 2, nrow = 4,
+          common.legend = TRUE, legend="bottom")
+```
