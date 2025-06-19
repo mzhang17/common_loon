@@ -1,0 +1,567 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+  <idinfo>
+    <citation>
+      <citeinfo>
+        <origin>Kevin P. Kenow</origin>
+        <origin>Luke J. Fara</origin>
+        <origin>Steven C. Houdek</origin>
+        <origin>Brian R Gray</origin>
+        <pubdate>20200529</pubdate>
+        <title>Common loon winter dive data</title>
+        <geoform>tabular digital data</geoform>
+        <pubinfo>
+          <pubplace>online</pubplace>
+          <publish>U.S. Geological Survey</publish>
+        </pubinfo>
+        <onlink>https://doi.org/10.5066/P9UIDEMO</onlink>
+        <lworkcit>
+          <citeinfo>
+            <origin>Kevin P. Kenow</origin>
+            <origin>Luke J. Fara</origin>
+            <origin>Steven C. Houdek</origin>
+            <origin>Brian R. Gray</origin>
+            <origin>Darryl J. Heard</origin>
+            <origin>Michael W. Meyer</origin>
+            <origin>Timothy J. Fox</origin>
+            <origin>Robert J. Kratt</origin>
+            <origin>Scott L. Ford</origin>
+            <origin>Annette Gendron‐Fitzpatrick</origin>
+            <origin>Carrol L. Henderson</origin>
+            <pubdate>20210609</pubdate>
+            <title>Migration patterns and wintering distribution of common loons breeding in the Upper Midwest</title>
+            <geoform>publication</geoform>
+            <serinfo>
+              <sername>Journal of Avian Biology</sername>
+              <issue>vol. 52, issue 8</issue>
+            </serinfo>
+            <pubinfo>
+              <pubplace>n/a</pubplace>
+              <publish>Wiley</publish>
+            </pubinfo>
+            <onlink>https://doi.org/10.1111/jav.02609</onlink>
+          </citeinfo>
+        </lworkcit>
+      </citeinfo>
+    </citation>
+    <descript>
+      <abstract>Breeding common loons for the movement and foraging pattern study were obtained from lakes in central and northern Minnesota and Wisconsin, and the Upper Peninsula of Michigan.   Both adults of a territorial pair were fitted with archival geolocator tags (Model LAT 2500; 34.6 x 8.3 mm, 4.4 g; Lotek Wireless Inc.).  A combination of adhesive and plastic cable ties were used to affix the geolocator tag to a modified lock-on aluminum leg band.  Tags were programmed to collect daily location estimates for up to two years, tag temperature (0.02o C accuracy, ≤ 0.05o C resolution) at 30-min intervals, and pressure data (±1% accuracy, 0.05% resolution) at 20-sec intervals during daylight hours to document foraging patterns (dive profiles) while on the Great Lakes during fall migration and on the wintering grounds.  Data stored on geolocator tags were not transmitted, requiring that the marked loon be recaptured to recover the tag and download the data.  The geolocator tags were capable of storing data for several years before the devices needed to be downloaded.  Geolocator tag data collected over the previous year(s) were downloaded from tags using LAT Viewer Studio software (Lotek Wireless Inc.).  Geolocator tag location estimates were based on light-based geolocations using the template-fitting approach (Exstrom, 2004), in combination with tag temperature (sea surface temperature) and pressure (dive depth) data.  Template-fit error estimates were used to filter aberrant geolocation estimates.  Sea surface temperature (derived from NASA Moderate Resolution Imaging Spectroradiometer [MODIS] imagery) across North America inland lakes, Atlantic coastal waters, and the Gulf of Mexico, coupled with diving depth information were used to improve or obtain location estimates and timing of migration movements when light-based geolocation estimates were unreliable.  Attributes of dives (i.e., proportion of time underwater, depth of dive, ascent and descent rates, duration of dive, time within 2 m of maximum depth, post dive surface interval) were extracted from pressure data.  When geotagged loons were in freshwater, depth was estimated by  pressure (dbar) * 1.019716 m / dbar (http://www.seabird.com/document/an69-conversion-pressure-depth).  When geotagged loons occurred in marine environments, depth was estimated from pressure measurements, estimates of gravity at given latitude and depth, all at standard ocean mass salinity of 35 g/kg (Fofonoff and Millard 1983).  Dives were considered as submergence below the water surface, which we define as recorded depth of &gt;0.8 m (typical body length of adult common loons in this study).  Because pressure data were collected at 20-sec intervals, we interpolated the times of both dive initiation and surfacing.  Maximum daily ascent and descent rates were estimated individually for each loon and used to interpolate these times, where rates were based on median values derived from dives &gt;35 m (n = 3,974 dives of 10 individual loons).  The descent and ascent rates used for interpolation were 1.056 m/sec and 1.605 m/sec, respectively, when loons were in freshwater (Kenow et al. 2018), and 0.992 and 1.399 m/sec, respectively, in marine environments.</abstract>
+      <purpose>Data were collected to determine the foraging patterns of common loons while on wintering areas.</purpose>
+    </descript>
+    <timeperd>
+      <timeinfo>
+        <rngdates>
+          <begdate>20101001</begdate>
+          <enddate>20130130</enddate>
+        </rngdates>
+      </timeinfo>
+      <current>ground condition</current>
+    </timeperd>
+    <status>
+      <progress>Complete</progress>
+      <update>None planned</update>
+    </status>
+    <spdom>
+      <descgeog>World</descgeog>
+      <bounding>
+        <westbc>-180.0</westbc>
+        <eastbc>180.0</eastbc>
+        <northbc>90.0</northbc>
+        <southbc>-90.0</southbc>
+      </bounding>
+    </spdom>
+    <keywords>
+      <theme>
+        <themekt>USGS Thesaurus</themekt>
+        <themekey>none</themekey>
+      </theme>
+      <theme>
+        <themekt>ISO 19115 Topic Category</themekt>
+        <themekey>biota</themekey>
+      </theme>
+      <theme>
+        <themekt>None</themekt>
+        <themekey>archival geolocator tag</themekey>
+        <themekey>common loon</themekey>
+        <themekey>dive attributes</themekey>
+        <themekey>foraging patterns</themekey>
+      </theme>
+      <theme>
+        <themekt>USGS Metadata Identifier</themekt>
+        <themekey>USGS:63519c99d34e47431c15dc49</themekey>
+      </theme>
+      <place>
+        <placekt>None</placekt>
+        <placekey>Gulf of Mexico</placekey>
+        <placekey>Atlantic Ocean along southeastern states</placekey>
+      </place>
+    </keywords>
+    <taxonomy>
+      <keywtax>
+        <taxonkt>USGS Biocomplexity Thesaurus</taxonkt>
+        <taxonkey>Birds</taxonkey>
+      </keywtax>
+      <taxonsys>
+        <classsys>
+          <classcit>
+            <citeinfo>
+              <origin>Integrated Taxonomic Information System</origin>
+              <pubdate>Unknown</pubdate>
+              <title>Integrated Taxonomic Information System</title>
+              <geoform>ONLINE_REFERENCE</geoform>
+              <pubinfo>
+                <pubplace>Unknown</pubplace>
+                <publish>Integrated Taxonomic Information System</publish>
+              </pubinfo>
+              <onlink>https://www.itis.gov/</onlink>
+            </citeinfo>
+          </classcit>
+        </classsys>
+        <ider>
+          <cntinfo>
+            <cntperp>
+              <cntper>Kevin P Kenow</cntper>
+              <cntorg>MIDCONTINENT REGION: UPPER MIDWEST ENVIRON SCI CTR</cntorg>
+            </cntperp>
+            <cntpos>Research Wildlife Biologist</cntpos>
+            <cntaddr>
+              <addrtype>mailing and physical</addrtype>
+              <address>2630 Fanta Reed Road</address>
+              <city>La Crosse</city>
+              <state>WI</state>
+              <postal>54603</postal>
+              <country>US</country>
+            </cntaddr>
+            <cntvoice>608-781-6278</cntvoice>
+            <cntemail>kkenow@usgs.gov</cntemail>
+          </cntinfo>
+        </ider>
+        <taxonpro>identification keys;;observer training</taxonpro>
+        <taxoncom>q</taxoncom>
+      </taxonsys>
+      <taxongen>Common loon (Gavia immer).</taxongen>
+      <taxoncl>
+        <taxonrn>Kingdom</taxonrn>
+        <taxonrv>Animalia</taxonrv>
+        <taxoncl>
+          <taxonrn>Subkingdom</taxonrn>
+          <taxonrv>Bilateria</taxonrv>
+          <taxoncl>
+            <taxonrn>Infrakingdom</taxonrn>
+            <taxonrv>Deuterostomia</taxonrv>
+            <taxoncl>
+              <taxonrn>Phylum</taxonrn>
+              <taxonrv>Chordata</taxonrv>
+              <taxoncl>
+                <taxonrn>Subphylum</taxonrn>
+                <taxonrv>Vertebrata</taxonrv>
+                <taxoncl>
+                  <taxonrn>Infraphylum</taxonrn>
+                  <taxonrv>Gnathostomata</taxonrv>
+                  <taxoncl>
+                    <taxonrn>Superclass</taxonrn>
+                    <taxonrv>Tetrapoda</taxonrv>
+                    <taxoncl>
+                      <taxonrn>Class</taxonrn>
+                      <taxonrv>Aves</taxonrv>
+                      <taxoncl>
+                        <taxonrn>Order</taxonrn>
+                        <taxonrv>Gaviiformes</taxonrv>
+                        <taxoncl>
+                          <taxonrn>Family</taxonrn>
+                          <taxonrv>Gaviidae</taxonrv>
+                          <taxoncl>
+                            <taxonrn>Genus</taxonrn>
+                            <taxonrv>Gavia</taxonrv>
+                            <taxoncl>
+                              <taxonrn>Species</taxonrn>
+                              <taxonrv>Gavia immer</taxonrv>
+                              <common>TSN: 174469</common>
+                            </taxoncl>
+                          </taxoncl>
+                        </taxoncl>
+                      </taxoncl>
+                    </taxoncl>
+                  </taxoncl>
+                </taxoncl>
+              </taxoncl>
+            </taxoncl>
+          </taxoncl>
+        </taxoncl>
+      </taxoncl>
+    </taxonomy>
+    <accconst>None.  Please see 'Distribution Info' for details.</accconst>
+    <useconst>None.  Users are advised to read the data set's metadata thoroughly to understand appropriate use and data limitations.</useconst>
+    <ptcontac>
+      <cntinfo>
+        <cntperp>
+          <cntper>Kevin P Kenow</cntper>
+          <cntorg>U.S. Geological Survey, MIDCONTINENT REGION</cntorg>
+        </cntperp>
+        <cntpos>Research Wildlife Biologist</cntpos>
+        <cntaddr>
+          <addrtype>mailing and physical</addrtype>
+          <address>2630 Fanta Reed Road</address>
+          <city>La Crosse</city>
+          <state>WI</state>
+          <postal>54603</postal>
+          <country>US</country>
+        </cntaddr>
+        <cntvoice>608-781-6278</cntvoice>
+        <cntemail>kkenow@usgs.gov</cntemail>
+      </cntinfo>
+    </ptcontac>
+    <datacred>a.	Funding for this study was provided by Great Lakes Restoration Initiative through an interagency agreement with the United States Environmental Protection Agency, with additional support from the Legislative-Citizen Commission on Minnesota Resources’ Environment and Natural Resources Trust Fund, and U.S. Geological Survey Wildlife Program funds.  Carrol Henderson, Minnesota Department of Natural Resources, secured funding for a portion of the study. Michael Meyer, Wisconsin Department of Natural Resources, assisted with study planning and loon captures. L. Naumann, R. Baker, P. Perry, and staff with the Minnesota Department of Natural Resources lined up local cooperators and provided necessary Minnesota permits.  Local field support was provided by W. Brininger and L. Deede (Tamarac National Wildlife Refuge), L. Laske and S. Maanum (Big Mantrap Lake Association), M. Hintz (Sportsmen’s Club of Lake Vermilion, Inc.), R. Mack (Burntside Property Owners’ Association), and J. Zernov.  P. Boma, L. Naumann, J. Wilson, T. Daulton, D. Killian, D. Stockwell, K. Woizeschke, K. Carlyle, and J. Kohn assisted with capture work.</datacred>
+    <tool>
+      <tooldesc>SAS used to generate final data set; error check</tooldesc>
+      <toolacc>
+        <onlink>https://doi.org/10.5066/F7VT1R95.</onlink>
+        <toolinst>U.S. Geological Survey Code Release https://doi.org/10.5066/F7VT1R95.</toolinst>
+      </toolacc>
+      <toolcont>
+        <cntinfo>
+          <cntperp>
+            <cntper>Kevin P Kenow</cntper>
+            <cntorg>MIDCONTINENT REGION: UPPER MIDWEST ENVIRON SCI CTR</cntorg>
+          </cntperp>
+          <cntpos>Research Wildlife Biologist</cntpos>
+          <cntaddr>
+            <addrtype>mailing and physical</addrtype>
+            <address>2630 Fanta Reed Road</address>
+            <city>La Crosse</city>
+            <state>WI</state>
+            <postal>54603</postal>
+            <country>US</country>
+          </cntaddr>
+          <cntvoice>608-781-6278</cntvoice>
+          <cntemail>kkenow@usgs.gov</cntemail>
+        </cntinfo>
+      </toolcont>
+      <toolcite>
+        <citeinfo>
+          <origin>Kevin Kenow</origin>
+          <pubdate>2018</pubdate>
+          <title>SAS Code for Extracting Dive Profile Information from Archival Geolocator Tags</title>
+          <geoform>q</geoform>
+        </citeinfo>
+      </toolcite>
+    </tool>
+  </idinfo>
+  <dataqual>
+    <attracc>
+      <attraccr>Observations were spot checked to confirm accuracy.</attraccr>
+    </attracc>
+    <logic>All data matches up with details provided. All values fall within expected ranges. Data has been checked for duplications or omissions</logic>
+    <complete>Data set is considered complete for the information presented, as described in the abstract. Users are advised to read the rest of the metadata record carefully for additional details.</complete>
+    <posacc>
+      <horizpa>
+        <horizpar>No formal positional accuracy tests were conducted</horizpar>
+      </horizpa>
+      <vertacc>
+        <vertaccr>No formal positional accuracy tests were conducted</vertaccr>
+      </vertacc>
+    </posacc>
+    <lineage>
+      <method>
+        <methtype>both</methtype>
+        <methdesc>See abstract and process steps for more information</methdesc>
+        <methcite>
+          <citeinfo>
+            <origin>Kenow, Kevin</origin>
+            <origin>Houdek, S.C.</origin>
+            <origin>Fara, L.J</origin>
+            <origin>Gray, B.R.</origin>
+            <origin>Lubinski, B.R.</origin>
+            <origin>Heard, D.J.</origin>
+            <origin>Meyer, M.W.</origin>
+            <origin>Fox, T.J.</origin>
+            <origin>Kratt, R.J.</origin>
+            <pubdate>2018</pubdate>
+            <title>Distribution and foraging patterns of common loons on Lake Michigan with implications for exposure to type E avian botulism</title>
+            <geoform>document</geoform>
+            <onlink>https://doi.org/10.1016/j.jglr.2018.02.004</onlink>
+          </citeinfo>
+        </methcite>
+      </method>
+      <procstep>
+        <procdesc>Data Collected</procdesc>
+        <procdate>20101001</procdate>
+      </procstep>
+      <procstep>
+        <procdesc>Data processed and exported into spreadsheet</procdesc>
+        <procdate>20101001</procdate>
+      </procstep>
+    </lineage>
+  </dataqual>
+  <eainfo>
+    <detailed>
+      <enttyp>
+        <enttypl>COLO winter dive data.csv</enttypl>
+        <enttypd>Comma Separated Value (CSV) file containing data.</enttypd>
+        <enttypds>Producer defined</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>geotag</attrlabl>
+        <attrdef>Geolocator tag identification number</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>1774</rdommin>
+            <rdommax>2789</rdommax>
+            <attrunit>Geolocator tag identification number</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>day</attrlabl>
+        <attrdef>Day of observation</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>1</rdommin>
+            <rdommax>31</rdommax>
+            <attrunit>day</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>month</attrlabl>
+        <attrdef>month of observation</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>1</rdommin>
+            <rdommax>12</rdommax>
+            <attrunit>month</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>year</attrlabl>
+        <attrdef>year of observation</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>10</rdommin>
+            <rdommax>13</rdommax>
+            <attrunit>year</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>hr_EST</attrlabl>
+        <attrdef>hour of observation (Eastern Standard Time)</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>7</rdommin>
+            <rdommax>18</rdommax>
+            <attrunit>hour</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>min</attrlabl>
+        <attrdef>minute of observation</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>71</rdommax>
+            <attrunit>minute</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>sec</attrlabl>
+        <attrdef>second of observation</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>19</rdommin>
+            <rdommax>80</rdommax>
+            <attrunit>second</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>max_depth</attrlabl>
+        <attrdef>Depth of dive (m)</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0.804549418</rdommin>
+            <rdommax>50.06476342</rdommax>
+            <attrunit>meters</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>interval_at_max_depth</attrlabl>
+        <attrdef>Duration of time within 2 m of maximum depth based on interval count (sec)</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>20</rdommin>
+            <rdommax>260</rdommax>
+            <attrunit>sec</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>dive_duration</attrlabl>
+        <attrdef>duration of dive (sec)</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>1.280761719</rdommin>
+            <rdommax>270.66504289999995</rdommax>
+            <attrunit>seconds</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>post_dive_surface_interval</attrlabl>
+        <attrdef>Duration of post-dive surface interval (sec)</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>&lt;&lt; empty cell &gt;&gt;</edomv>
+            <edomvd>No Data</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <rdom>
+            <rdommin>1.733155727</rdommin>
+            <rdommax>359.978049</rdommax>
+            <attrunit>seconds</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>gender_radio</attrlabl>
+        <attrdef>Gender-radio category of loon (Female, Male with PTT, Male without PTT)</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>&lt;&lt; empty cell &gt;&gt;</edomv>
+            <edomvd>No Data</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Female</edomv>
+            <edomvd>female</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Male without PTT</edomv>
+            <edomvd>male without PTT</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Male with PTT</edomv>
+            <edomvd>Male with PTT</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>winter_loc</attrlabl>
+        <attrdef>Location of wintering area (Atlantic Ocean, Gulf of Mexico, SE Reservoir)</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>Gulf of Mexico</edomv>
+            <edomvd>Gulf of Mexico</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Atlantic Ocean</edomv>
+            <edomvd>Atlantic Ocean</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>SE Reservoir</edomv>
+            <edomvd>SE Reservoir</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+    </detailed>
+  </eainfo>
+  <distinfo>
+    <distrib>
+      <cntinfo>
+        <cntperp>
+          <cntper>GS ScienceBase</cntper>
+          <cntorg>U.S. Geological Survey</cntorg>
+        </cntperp>
+        <cntaddr>
+          <addrtype>mailing and physical</addrtype>
+          <address>Denver Federal Center, Building 810, Mail Stop 302</address>
+          <city>Denver</city>
+          <state>CO</state>
+          <postal>80225</postal>
+          <country>United States</country>
+        </cntaddr>
+        <cntvoice>1-888-275-8747</cntvoice>
+        <cntemail>sciencebase@usgs.gov</cntemail>
+      </cntinfo>
+    </distrib>
+    <distliab>Unless otherwise stated, all data, metadata and related materials are considered to satisfy the quality standards relative to the purpose for which the data were collected. Although these data and associated metadata have been reviewed for accuracy and completeness and approved for release by the U.S. Geological Survey (USGS), no warranty expressed or implied is made regarding the display or utility of the data on any other system or for general or scientific purposes, nor shall the act of distribution constitute any such warranty.</distliab>
+    <stdorder>
+      <digform>
+        <digtinfo>
+          <formname>Digital Data</formname>
+          <formvern>none</formvern>
+        </digtinfo>
+        <digtopt>
+          <onlinopt>
+            <computer>
+              <networka>
+                <networkr>https://doi.org/10.5066/P9UIDEMO</networkr>
+              </networka>
+            </computer>
+          </onlinopt>
+        </digtopt>
+      </digform>
+      <fees>None</fees>
+    </stdorder>
+  </distinfo>
+  <metainfo>
+    <metd>20241010</metd>
+    <metc>
+      <cntinfo>
+        <cntperp>
+          <cntper>Kevin P Kenow</cntper>
+          <cntorg>U.S. Geological Survey, MIDCONTINENT REGION</cntorg>
+        </cntperp>
+        <cntpos>Research Wildlife Biologist</cntpos>
+        <cntaddr>
+          <addrtype>mailing and physical</addrtype>
+          <address>2630 Fanta Reed Road</address>
+          <city>La Crosse</city>
+          <state>WI</state>
+          <postal>54603</postal>
+          <country>US</country>
+        </cntaddr>
+        <cntvoice>608-781-6278</cntvoice>
+        <cntfax>608-783-6066</cntfax>
+        <cntemail>kkenow@usgs.gov</cntemail>
+      </cntinfo>
+    </metc>
+    <metstdn>FGDC Biological Data Profile of the Content Standard for Digital Geospatial Metadata</metstdn>
+    <metstdv>FGDC-STD-001.1-1999</metstdv>
+  </metainfo>
+</metadata>

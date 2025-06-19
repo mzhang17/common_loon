@@ -1,0 +1,113 @@
+---
+title: "KenowMap"
+format: pdf
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+
+```
+
+<https://www.sciencebase.gov/catalog/item/6065f6fad34eff14434396a2>
+
+"loonID" loon lake name, loon territory, bird gender, two-digit year, archival geolocation tag ID
+
+"Day" Day of observation
+
+"Month" Month of observation
+
+"Year" Year of observation
+
+"TFLatN" latitude of the estimated location in decimal degrees
+
+"TFLonN" longitude of the estimated location in decimal degrees
+
+"TFLatErrN" error of the estimated latitude location in decimal degrees
+
+"TFLonErrN" error of the estimated longitude location in decimal degrees
+
+"Max Press" maximum dive depth (m) of loon related to maximum underwater pressure determined during a 24-hour cycle (0000-2359 hours)
+
+"Min Int Temp" minimum internal tag temperature (oC) determined during a 24-hour cycle (0000-2359 hours)
+
+"Median Temp" median value of all temperatures (oC) determined during a 24-hour cycle (0000-2359 hours)
+
+"Wet Median" median value of temperatures (oC) determined during a 24-hour cycle (0000-2359 hours) when the tag was in a wet state
+
+"SST1" Sea Surface Temperature
+
+"Specific Location" Specific lake, gulf, or ocean name, or locality of the body of water (U.S. State) that the loon is present on
+
+"General Location" General lake, gulf, or ocean name, or locality of the body of water (U.S. State) that the loon is present on
+
+"Comment" General comments related to data collection and interpretation, loon locations
+
+```{r}
+#| message: false
+KenowData <- read_csv("KenowData.csv", na=c(".")) %>% 
+  mutate(loonID=as.factor(loonID))%>% 
+  filter(!is.na(TFLatN))
+
+summary(KenowData)
+
+# how many loons
+length(levels(KenowData$loonID))
+
+KenowData %>% 
+  filter(is.na(TFLatN))
+
+levels(KenowData$loonID)
+```
+
+map the points
+
+```{r}
+
+# Get world map data and transform CRS
+world <- ne_countries(scale = "medium", returnclass = "sf")
+world <- st_transform(world, crs = 4326)  # Ensure correct CRS
+
+# Define Gulf of Mexico bounding box
+gulf_bbox <- st_as_sfc(st_bbox(c(xmin = -99, xmax = -79, ymin = 17, ymax = 31), crs = st_crs(world)))
+
+
+# Crop to Gulf of Mexico
+gulf_map <- st_intersection(world, gulf_bbox)
+
+# Example locations (longitude, latitude)
+coordinates <- KenowData %>% 
+  filter(TFLonN!="." & TFLatN != ".")%>% 
+  filter(TFLatN<90 & TFLatN > 0)
+
+# Convert to sf object
+points_sf <- st_as_sf(coordinates, coords = c("TFLonN", "TFLatN"), crs = 4326)
+filtered_points <- points_sf[st_within(points_sf, gulf_bbox, sparse = FALSE), ]
+
+filtered_points_tibble <- filtered_points %>%
+  mutate(
+    longitude = st_coordinates(.)[, 1],  # Extract longitude
+    latitude = st_coordinates(.)[, 2]   # Extract latitude
+  ) %>%
+  st_drop_geometry() %>%  # Drop sf geometry column
+  as_tibble()
+
+
+# Plot the Gulf of Mexico with points
+ggplot() +
+  geom_sf(data = gulf_map, fill = "lightgray", color = "black") +  # Base map
+  geom_sf(data = filtered_points, color = "red", size = 1) +  # Points
+  theme_minimal() +
+  ggtitle("Map of the Gulf of Mexico with Sample Points")
+
+```
+
+![](images/clipboard-3625989192.png){width="313"}
+
+![](images/clipboard-578407397.png){width="282"}
+
+![](images/clipboard-2616112526.png){width="488"}

@@ -99,6 +99,38 @@ param_collapse <- function(param_list){
 }
 ```
 
+test if lambda is the same after collapsing
+
+```{r}
+b_test_p3 <- list(
+  b_a=0.6,   # adult pairing propensity
+  b_y=0.7, # young adult pairing propensity
+  m=0.48, # chick production.    
+  r=0.5,   #sex ratio   
+  sigma_j = 0.45^(12/34), #juv survival
+  sigma_a=0.92,  # Adult survival
+  sigma_y=0.92 # young adult survival
+)
+
+b_test_p2 <- param_collapse(b_test_p3)
+
+constructMatrix2(b_test_p2)$lam2 == constructMatrix3(b_test_p3)$lam3
+
+p_test_p3 <- list(
+  b_a=0.8,   # adult pairing propensity
+  b_y=0.8, # young adult pairing propensity
+  m=0.48, # chick production.    
+  r=0.5,   #sex ratio   
+  sigma_j = 0.45^(12/34), #juv survival
+  sigma_a=0.93,  # Adult survival
+  sigma_y=0.7 # young adult survival
+)
+
+p_test_p2 <- param_collapse(p_test_p3)
+
+constructMatrix2(p_test_p2)$lam2 == constructMatrix3(p_test_p3)$lam3
+```
+
 # Plotting lamdas
 
 ```{r}
@@ -122,6 +154,8 @@ hyp_p2 <- list(
 ```
 
 ## heat map
+
+for sigma_a and sigma_y and Pa
 
 ```{r}
 #| fig-width: 6.5
@@ -185,9 +219,92 @@ group_colors[1] <- "transparent"
 ggplot(heatmap_data, aes(x = sigma_y, y = sigma_a, fill = lam3)) +
   geom_tile(aes(color = outline), size = 1.5) +  # Use Pa_group for the color outline
   geom_text(aes(label = round(lam3, digits = 3)), color = "white", size = 2) +
-  scale_color_manual(values = setNames(group_colors, unique(heatmap_data$Pa_group))) +  # Apply color palette
-  scale_fill_gradient(low = "blue", high = "red", name = "Lambda") +
+  scale_color_manual(values = setNames(group_colors, unique(heatmap_data$outline))) +  # Apply color palette
+  scale_fill_gradientn(
+    colors = c("gray", "blue", "red"), 
+    values = scales::rescale(c(0, 0.9, 1, 1.086)),
+    limits = c(0, 1.086),
+    breaks = c(0.9, 1, 1.086),
+    labels = c("<0.9", "0.9-1", ">1"),
+    name = "Lambda"
+  ) +
   labs(x = "sigma_y", y = "sigma_a", title = "Heatmap of Lambda with Pa") +
+  theme_minimal() +
+  theme(
+    panel.grid = element_blank(),
+    axis.title = element_text(size = 12),
+    plot.title = element_text(hjust = 0.5, size = 14)
+  )
+```
+
+```{r}
+b_y_values <- seq(0.5, 0.9, by = 0.03)
+b_a_values <- seq(0.5, 0.93, by = 0.03)
+
+# Initialize a data frame to store results
+heatmap_data <- data.frame(b_a = numeric(0), b_y = numeric(0), lam3 = numeric(0), b = numeric(0))
+
+# Iterate through all combinations of sigma_y and sigma_a
+for (b_y in b_y_values) {
+  for (b_a in b_a_values) {
+    # Update the parameter list
+    param_list <- list(
+      sigma_y = 0.8,
+      sigma_a = 0.8,
+      b_a = b_a, # example value
+      b_y = b_y, # example value
+      m = 1.5,   # example value
+      r = 0.5,   # example value
+      sigma_j = 0.45^(12/34) # example value
+    )
+    
+    # Calculate lam3 and Pa
+    construct_result <- constructMatrix3(param_list)
+    b_collapsed <- param_collapse(param_list)
+    
+    # Append the result to the data frame
+    heatmap_data <- rbind(heatmap_data, data.frame(
+      b_a = b_a,
+      b_y = b_y,
+      lam3 = construct_result$lam3,
+      b = b_collapsed$b
+    ))
+  }
+}
+
+interest_b <- seq(0.5, 0.9, by = 0.1)
+
+# Compare each Pa with all others and add an outline flag
+heatmap_data <- heatmap_data %>%
+  mutate(outline = "N/A") %>%  # Set default outline as "N/A"
+  mutate(outline = sapply(b, function(current_b) {
+    # Check if current_Pa is within 0.005 of any value in interest_Pa
+    matched_b <- sapply(interest_b, function(target_b) {abs(current_b - target_b) <= 0.005})
+    
+    # If matched, return the Pa value; otherwise, return "N/A"
+    if (any(matched_b)) {paste("b =", interest_b[which(matched_b)])} else {"N/A"}
+  }))
+
+# Generate a color palette for each Pa group
+n_groups <- length(unique(heatmap_data$outline))
+group_colors <- setNames(scales::hue_pal()(n_groups), unique(heatmap_data$outline))
+
+group_colors["N/A"] <- "transparent"
+
+# Plot the heatmap
+ggplot(heatmap_data, aes(x = b_y, y = b_a, fill = lam3)) +
+  geom_tile(aes(color = outline), size = 1.5) +  # Use Pa_group for the color outline
+  geom_text(aes(label = round(lam3, digits = 3)), color = "white", size = 2) +
+  scale_color_manual(values = setNames(group_colors, unique(heatmap_data$outline))) +  # Apply color palette
+  scale_fill_gradientn(
+    colors = c("gray", "blue", "red"), 
+    values = scales::rescale(c(0, 0.9, 1, 1.086)),
+    limits = c(0, 1.086),
+    breaks = c(0.9, 1, 1.086),
+    labels = c("<0.9", "0.9-1", ">1"),
+    name = "Lambda"
+  ) +
+  labs(x = "b_y", y = "b_a", title = "Heatmap of Lambda with b") +
   theme_minimal() +
   theme(
     panel.grid = element_blank(),
@@ -440,7 +557,6 @@ params <- ggplot() +
   
 sigma_j_lam_annotated <- ggarrange(sigma_j_lam_line_plot,sigma_j_sensitivity_plot,sigma_j_elasticity_plot, params, ncol = 4, nrow = 1)
 ```
-
 
 ```{r}
 #| results: 'hide'
