@@ -11,48 +11,76 @@ read_iButton <- function(file_path){
     slice(1:(n()-1))
 }
 
-file_list <- list.files(path = "iButton25/", 
-                        pattern = "\\.xlsx$", 
-                        full.names = TRUE)
-
-dataframe_list <- lapply(file_list, read_iButton)
-
-file_names <- basename(file_list)
-names(dataframe_list) <- sub("\\.xlsx$", "", file_names)
-
-## ----filter cutoff time--------------------
-cutoff_times <- read_csv("iButton25/cutoff_times.csv", col_types = cols(
-  site = col_character(),
-  date = col_character(),
-  time = col_character()
-)) %>%
-  mutate(
-    site = str_trim(site),
-    datetime = ymd_hms(paste(date, time))
-  ) %>%
-  select(site, datetime) %>%
-  deframe()
-
-filter_cutoff <- function(df_name) {
-  df <- dataframe_list[[df_name]]
-  site <- sub("_[IE]$", "", df_name)
-  cutoff <- cutoff_times[[site]]
-  
-  if (is.null(cutoff)) {
-    warning(paste("No cutoff found for site:", site))
-    return(df)
-  }
-  
-  df <- df %>%
-    mutate(DateTime = ymd_hms(paste(Date, Time))) %>%
-    filter(DateTime <= cutoff) %>%
-    select(-DateTime)
-  return(df)
+read_all_iButton <- function(folder_path){
+  file_list <- list.files(path = folder_path, 
+                          pattern = "\\.xlsx$", 
+                          full.names = TRUE)
+  dataframe_list <- lapply(file_list, read_iButton)
+  file_names <- basename(file_list)
+  names(dataframe_list) <- sub("\\.xlsx$", "", file_names)
+  return(dataframe_list)
 }
 
-filtered_list <- setNames(
-  lapply(names(dataframe_list), filter_cutoff),
-  names(dataframe_list))
+## ----get cutoff time--------------------
+get_cutoff_times <- function(path) {
+  read_csv(path, col_types = cols(
+    site = col_character(),
+    date = col_character(),
+    time = col_character()
+  )) %>%
+    mutate(
+      site = str_trim(site),
+      date = str_trim(date),
+      time = str_trim(time),
+      
+      # Handle common Excel-format quirks
+      date = parse_date_time(date, 
+                             orders = c("ymd", "mdy", "dmy")),
+      time = parse_date_time(time, 
+                             orders = c("HMS", "HM", "I:M p", "I:M:S p")) %>% 
+        format("%H:%M:%S"),
+      
+      datetime = ymd_hms(paste(date, time), quiet = TRUE)
+    ) %>%
+    filter(!is.na(datetime)) %>%
+    select(site, datetime) %>%
+    deframe()
+}
+
+## ----filter cutoff time--------------------
+filter_all_iButton <- function(data_list, cutoff_times) {
+  
+  # Helper function to apply to each item in the list
+  filter_one <- function(df_name) {
+    df <- data_list[[df_name]]
+    
+    # Extract site name (e.g., remove _I or _E suffix)
+    site <- sub("_[IE]$", "", df_name)
+    cutoff <- cutoff_times[[site]]
+    
+    if (is.null(cutoff)) {
+      warning(paste("No cutoff found for site:", site))
+      return(df)
+    }
+    
+    df %>%
+      mutate(
+        Date = as.character(Date),
+        Time = as.character(Time),
+        DateTime = ymd_hms(paste(Date, Time), quiet = TRUE)
+      ) %>%
+      filter(DateTime <= cutoff) %>%
+      select(-DateTime)
+  }
+  
+  # Apply to all data frames in the list
+  result <- setNames(
+    lapply(names(data_list), filter_one),
+    names(data_list)
+  )
+  
+  return(result)
+}
 
 ## ----plot--------------------
 plot_site <- function(site_name_base, data_list) {
@@ -91,6 +119,9 @@ plot_site <- function(site_name_base, data_list) {
 }
 
 #----------trial----------------------
-
-plot_site("DeerRiverFlowDam_predated", filtered_list)
-plot_site("LakeKushaquaIsland_abandoned", filtered_list)
+all_data_ls <- read_all_iButton("iButton25/")
+cutoff_times_test <- get_cutoff_times("iButton25/cutoff_times.csv")
+filter_all_data_ls <- filter_all_iButton(all_data_ls, cutoff_times_test)
+plot_site("DeerRiverFlowDam_predated", filter_all_data_ls)
+plot_site("LakeKushaquaIsland_abandoned", filter_all_data_ls)
+plot_site("LittleClearPondIsle_predated", filter_all_data_ls)
